@@ -21,12 +21,19 @@
   in {
     packages = forAllSystems (system: let
       pkgs = nixpkgsFor.${system};
-    in {
+    in rec {
       tg-ha-door = pkgs.buildGoModule {
         pname = "tg-ha-door";
         inherit version;
         src = ./.;
         vendorHash = "sha256-OafU9iQpzYMQE3nra3OczdUGb8BLfavXXIDLKHn9MBw=";
+      };
+
+      docker = pkgs.dockerTools.buildLayeredImage {
+        name = "tg-ha-door";
+        tag = "v${version}";
+        contents = with pkgs; [cacert tg-ha-door];
+        config = {Entrypoint = ["tg-ha-door"];};
       };
     });
 
