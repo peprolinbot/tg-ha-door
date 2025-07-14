@@ -14,8 +14,8 @@ import (
 	"github.com/peprolinbot/tg-ha-door/door"
 )
 
-var keyChatId = os.Getenv("TG_KEY_CHAT_ID")
-var logChatId = os.Getenv("TG_LOG_CHAT_ID")
+var keyChatId string
+var logChatId string
 
 var doorReplyKeyboard *reply.ReplyKeyboard
 
@@ -91,6 +91,18 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
+	var exists bool
+	keyChatId, exists = os.LookupEnv("TG_KEY_CHAT_ID")
+	if !exists {
+		slog.Error("Please set the TG_KEY_CHAT_ID env var")
+		os.Exit(1)
+	}
+	logChatId, exists = os.LookupEnv("TG_LOG_CHAT_ID")
+	if !exists {
+		slog.Error("Please set the TG_LOG_CHAT_ID env var")
+		os.Exit(1)
+	}
+
 	opts := []bot.Option{
 		bot.WithMiddlewares(requireAuth),
 		bot.WithDefaultHandler(sendmenuHandler),
@@ -99,14 +111,16 @@ func main() {
 
 	b, err := bot.New(os.Getenv("TG_BOT_TOKEN"), opts...)
 	if nil != err {
-		// panics for the sake of simplicity.
-		// you should handle this error properly in your code.
-		panic(err)
+		slog.Error("Error connecting to Telegram (make sure to set TG_BOT_TOKEN and other TG_* env vars):", "error", err)
+		os.Exit(1)
 	}
 
 	initDoorReplyKeyboard(b)
 
+	slog.Info("The Bot is ready to rock!")
 	b.Start(ctx)
+
+	slog.Info("Bye!")
 }
 
 func requireAuth(next bot.HandlerFunc) bot.HandlerFunc {

@@ -9,25 +9,32 @@ import (
 	ga "saml.dev/gome-assistant"
 )
 
-// Configuration variables
-var doorEntityId = os.Getenv("HA_DOOR_ENTITY_ID")
-
 // All are public in case we want to write about them
-var DoorOpenCloseTimeStr = os.Getenv("DOOR_OPEN_CLOSE_TIME")
+var DoorOpenCloseTimeStr string
 var DoorOpenCloseTimeInt int
 var DoorOpenCloseTime time.Duration
+
+var doorEntityId string
 
 var app *ga.App
 
 func init() {
 	var err error
-
+	
+	DoorOpenCloseTimeStr = os.Getenv("DOOR_OPEN_CLOSE_TIME")
 	DoorOpenCloseTimeInt, err = strconv.Atoi(DoorOpenCloseTimeStr)
 	if err != nil {
 		slog.Error("Error converting DOOR_OPEN_CLOSE_TIME to int:", err)
-		return
+		os.Exit(1)
 	}
 	DoorOpenCloseTime = time.Duration(DoorOpenCloseTimeInt)
+
+	var exists bool
+	doorEntityId, exists = os.LookupEnv("HA_DOOR_ENTITY_ID")
+	if !exists {
+		slog.Error("Please set the HA_DOOR_ENTITY_ID env var")
+		os.Exit(1)
+	}
 
 	app, err = ga.NewApp(ga.NewAppRequest{
 		URL:         os.Getenv("HA_URL"),
@@ -35,7 +42,7 @@ func init() {
 	})
 
 	if err != nil {
-		slog.Error("Error connecting to HASS:", "error", err)
+		slog.Error("Error connecting to HASS (make sure to set HA_URL and HA_AUTH_TOKEN):", "error", err)
 		os.Exit(1)
 	}
 }
