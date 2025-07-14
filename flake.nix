@@ -1,11 +1,18 @@
 {
   description = "A simple Telegram bot to allow controlling a Home Assistant garage door";
 
-  inputs.nixpkgs.url = "nixpkgs/nixos-25.05";
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    flocken = {
+      url = "github:mirkolenz/flocken/v2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
 
   outputs = {
     self,
     nixpkgs,
+    flocken,
   }: let
     # to work with older version of flakes
     lastModifiedDate = self.lastModifiedDate or self.lastModified or "19700101";
@@ -31,12 +38,28 @@
 
       docker = pkgs.dockerTools.buildLayeredImage {
         name = "tg-ha-door";
-        tag = "v${version}";
+        tag = "${version}";
         contents = with pkgs; [cacert tg-ha-door];
         config = {Entrypoint = ["tg-ha-door"];};
       };
     });
-
+    legacyPackages = forAllSystems (system: {
+      docker-manifest = flocken.legacyPackages.${system}.mkDockerManifest {
+        github = {
+          enable = true;
+          token = "$GH_TOKEN";
+        };
+        inherit version;
+        images = with self.packages; [
+          x86_64-linux.docker
+          aarch64-linux.docker
+        ];
+        autoTags = {
+          major = false;
+          majorMinor = false;
+        };
+      };
+    });
     devShells = forAllSystems (system: let
       pkgs = nixpkgsFor.${system};
     in {
