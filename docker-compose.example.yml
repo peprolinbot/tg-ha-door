@@ -1,0 +1,11 @@
+services:
+  bot:
+    image: ghcr.io/peprolinbot/tg-ha-door:latest
+    environment:
+      - TG_BOT_TOKEN=4839574812:AAFD39kkdpWt3ywyRZergyOLMaJhac60qc
+      - TG_KEY_CHAT_ID=123456
+      - TG_LOG_CHAT_ID=654321
+      - HA_URL=http://homeassistant.local:8123
+      - HA_AUTH_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJOZXZlciBnb25uYSBnaXZlIHlvdSB1cCIsImlhdCI6MTIzNDU2NzgsImV4cCI6ODc2NTQzMjEsImhlbGxvIjoiR29vZCB0cnkifQ.VMlDF1fNNGkChoDc7vUgtazEq4xjSBcnj0sDr4Y5_-U
+      - HA_DOOR_ENTITY_ID=cover.garage_door
+      - DOOR_OPEN_CLOSE_TIME=60
