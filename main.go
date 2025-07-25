@@ -44,7 +44,9 @@ func initDoorReplyKeyboard(b *bot.Bot) {
 }
 
 func onDoorReplyKeyboardSelect(ctx context.Context, b *bot.Bot, update *models.Update) {
-	var answer string
+	var (answer string
+		err error)
+
 
 	switch update.Message.Text {
 	case doorMenuStrings.OpenAndClose:
@@ -53,18 +55,23 @@ func onDoorReplyKeyboardSelect(ctx context.Context, b *bot.Bot, update *models.U
 			Text:      fmt.Sprintf("Abriendo puerta\\.\\.\\. \\(Se cerrará en %ds\\)", door.DoorOpenCloseTimeInt),
 			ParseMode: models.ParseModeMarkdown,
 		})
-		door.OpenAndClose()
+		err = door.OpenAndClose()
 		answer = "Cerrando puerta\\.\\.\\."
 	case doorMenuStrings.Open:
-		door.Open()
+		err = door.Open()
 		answer = "Abriendo puerta\\.\\.\\."
 	case doorMenuStrings.Close:
-		door.Close()
+		err = door.Close()
 		answer = "Cerrando puerta\\.\\.\\."
 	case doorMenuStrings.State:
-		state, _ := door.State()
+		var state string
+		state, err = door.State()
 
 		answer = fmt.Sprintf("El estado de la puerta es *%s*", state)
+	}
+
+	if err!=nil {
+		answer="⚠️ Hubo un *error* mientras se ejecutaba tu comando"
 	}
 
 	b.SendMessage(ctx, &bot.SendMessageParams{
