@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	ga "saml.dev/gome-assistant"
+	homeassistant "github.com/mutablelogic/go-client/pkg/homeassistant"
 )
 
 // All are public in case we want to write about them
@@ -16,11 +16,11 @@ var DoorOpenCloseTime time.Duration
 
 var doorEntityId string
 
-var app *ga.App
+var haClient *homeassistant.Client
 
 func init() {
 	var err error
-	
+
 	DoorOpenCloseTimeStr = os.Getenv("DOOR_OPEN_CLOSE_TIME")
 	DoorOpenCloseTimeInt, err = strconv.Atoi(DoorOpenCloseTimeStr)
 	if err != nil {
@@ -36,10 +36,7 @@ func init() {
 		os.Exit(1)
 	}
 
-	app, err = ga.NewApp(ga.NewAppRequest{
-		URL:         os.Getenv("HA_URL"),
-		HAAuthToken: os.Getenv("HA_AUTH_TOKEN"),
-	})
+	haClient, err = homeassistant.New(os.Getenv("HA_URL")+"/api", os.Getenv("HA_AUTH_TOKEN"))
 
 	if err != nil {
 		slog.Error("Error connecting to HASS (make sure to set HA_URL and HA_AUTH_TOKEN):", "error", err)
@@ -49,7 +46,7 @@ func init() {
 
 func Open() error {
 	slog.Info("Opening the door...")
-	err := app.GetService().Cover.Open(doorEntityId)
+	_, err := haClient.Call("open_cover", doorEntityId)
 
 	if err != nil {
 		slog.Warn("Error while opening the door:", "error", err)
@@ -60,7 +57,7 @@ func Open() error {
 
 func Close() error {
 	slog.Info("Closing the door...")
-	err := app.GetService().Cover.Close(doorEntityId)
+	_, err := haClient.Call("close_cover", doorEntityId)
 
 	if err != nil {
 		slog.Warn("Error while closing the door:", "error", err)
@@ -86,13 +83,11 @@ func OpenAndClose() error {
 func State() (string, error) {
 	slog.Debug("Getting door state...")
 
-	state, err := app.GetState().Get(doorEntityId)
-
-	if err != nil {
+	if state, err := haClient.State(doorEntityId); err != nil {
 		slog.Warn("Error while getting the door state:", "error", err)
+		return "error", err
 	} else {
 		slog.Info("Got door state:", "state", state.State)
+		return state.State, err
 	}
-
-	return state.State, err
 }
