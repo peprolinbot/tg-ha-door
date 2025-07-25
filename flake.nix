@@ -33,7 +33,7 @@
         pname = "tg-ha-door";
         inherit version;
         src = ./.;
-        vendorHash = "sha256-OafU9iQpzYMQE3nra3OczdUGb8BLfavXXIDLKHn9MBw=";
+        vendorHash = "sha256-n3XbhzPd75DCW8KNRqb/wdp83iKUnf/1rQRNq5dRhbk=";
       };
 
       docker = pkgs.dockerTools.buildLayeredImage {
