@@ -78,6 +78,7 @@ func onDoorReplyKeyboardSelect(ctx context.Context, b *bot.Bot, update *models.U
 		ChatID:    update.Message.Chat.ID,
 		Text:      answer,
 		ParseMode: models.ParseModeMarkdown,
+		ReplyMarkup: doorReplyKeyboard,
 	})
 }
 
