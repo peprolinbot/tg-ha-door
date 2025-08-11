@@ -85,7 +85,7 @@
           enable = mkEnableOption "Whether to enable tg-ha-door";
           package = mkOption {
             type = types.package;
-            default = pkgs.tg-ha-door;
+            default = self.packages.${pkgs.system}.tg-ha-door;
             example = "pkgs.tg-ha-door";
             description = ''
               Package of tg-ha-door to use.
