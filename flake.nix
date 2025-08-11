@@ -7,12 +7,17 @@
       url = "github:mirkolenz/flocken/v2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+search = {
+      url = "github:NuschtOS/search";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
     flocken,
+search,
   }: let
     # to work with older version of flakes
     lastModifiedDate = self.lastModifiedDate or self.lastModified or "19700101";
@@ -61,6 +66,12 @@
           major = false;
           majorMinor = false;
         };
+      };
+
+      options-search = search.packages.${system}.mkSearch {
+        title = "tg-ha-door Options Search";
+        modules = [self.nixosModules.default {_module.args = {pkgs = nixpkgsFor.${system};};}];
+        urlPrefix = "https://github.com/peprolinbot/tg-ha-door/blob/main/";
       };
     });
 
