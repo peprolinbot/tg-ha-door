@@ -36,6 +36,8 @@
         vendorHash = "sha256-n3XbhzPd75DCW8KNRqb/wdp83iKUnf/1rQRNq5dRhbk=";
       };
 
+      default = tg-ha-door;
+
       docker = pkgs.dockerTools.buildLayeredImage {
         name = "tg-ha-door";
         tag = "${version}";
@@ -69,8 +71,6 @@
         buildInputs = with pkgs; [go gopls gotools go-tools];
       };
     });
-
-    defaultPackage = forAllSystems (system: self.packages.${system}.tg-ha-door);
 
     nixosModules.default = {
       lib,
