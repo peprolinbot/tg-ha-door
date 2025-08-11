@@ -83,7 +83,9 @@ search,
       };
     });
 
-    nixosModules.default = {
+    nixosModules = rec {
+default = tg-ha-door;
+      tg-ha-door = {
       lib,
       pkgs,
       config,
@@ -185,6 +187,7 @@ search,
               StateDirectory = "tg-ha-door";
               ExecStart = "${cfg.package}/bin/tg-ha-door'";
               Restart = "on-failure";
+};
             };
           };
         };
