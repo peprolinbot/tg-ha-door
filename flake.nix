@@ -96,23 +96,24 @@ default = tg-ha-door;
       in {
         options.services.tg-ha-door = {
           enable = mkEnableOption "tg-ha-door";
-          package = mkPackageOption self.packages.${pkgs.system} "tg-ha-door" {          };
-          settings = {
+          package = mkPackageOption self.packages.${pkgs.system} "tg-ha-door" {};
+          settings = mkOption {
             description = ''
               Your tg-ha-door configuration. Will be set to the environment variables in [the README](https://github.com/peprolinbot/tg-ha-door/tree/main?tab=readme-ov-file#environment-variables) for definitions and values.
             '';
             example = lib.literalExpression ''
               {
-                TG_BOT_TOKEN = "https://example.com";
+                TG_BOT_TOKEN = "4839574812:AAFD39kkdpWt3ywyRZergyOLMaJhac60qc";
                 TG_KEY_CHAT_ID = "123456";
                 TG_LOG_CHAT_ID = "654321";
                 HA_URL = "http://homeassistant.local:8123";
-                HA_AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJOZXZlciBnb25uYSBnaXZlIHlvdSB1cCIsImlhdCI6MTIzNDU2NzgsImV4cCI6ODc2NTQzMjEsImhlbGxvIjoiR29vZCB0cnkifQ.VMlDF1fNNGkChoDc7vUgtazEq4xjSBcnj0sDr4Y5_-U"
+                HA_AUTH_TOKEN = "eyJhbGciO...U"
                 HA_DOOR_ENTITY_ID = "cover.garage_door"
                 DOOR_OPEN_CLOSE_TIME = 60;
               }
             '';
-
+type = types.submodule {
+                options = {
             TG_BOT_TOKEN = mkOption {
               description = ''
                 The token you obtained from @BotFather ([more info](https://core.telegram.org/bots/tutorial#obtain-your-bot-token))
