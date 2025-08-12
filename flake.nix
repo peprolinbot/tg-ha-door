@@ -182,7 +182,7 @@
                 Group = "tg-ha-door";
                 DynamicUser = true;
                 StateDirectory = "tg-ha-door";
-                ExecStart = "${cfg.package}/bin/tg-ha-door'";
+                ExecStart = "${cfg.package}/bin/tg-ha-door";
                 Restart = "on-failure";
               };
             };
