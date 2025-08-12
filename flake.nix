@@ -163,6 +163,7 @@
                     '';
                     type = types.ints.positive;
                     example = 60;
+                    apply = toString;
                   };
                 };
               };
