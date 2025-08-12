@@ -107,8 +107,8 @@
                   TG_KEY_CHAT_ID = "123456";
                   TG_LOG_CHAT_ID = "654321";
                   HA_URL = "http://homeassistant.local:8123";
-                  HA_AUTH_TOKEN = "eyJhbGciO...U"
-                  HA_DOOR_ENTITY_ID = "cover.garage_door"
+                  HA_AUTH_TOKEN = "eyJhbGciO...U";
+                  HA_DOOR_ENTITY_ID = "cover.garage_door";
                   DOOR_OPEN_CLOSE_TIME = 60;
                 }
               '';
