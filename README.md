@@ -34,13 +34,11 @@ docker run -d --name tg-ha-door \
 
 ### ❄️ Nix package
 
-If you use [NixOS] or have [Nix] installed, you can easily use the flake in this repo, which includes a package. Be sure to set all the required environment variables. You can, for example, do:
+If you use [NixOS] or have [Nix] installed, you can easily use the flake in this repo, which includes a package and a NixOS module ([search its options here](https://peprolinbot.github.io/tg-ha-door)). Be sure to set all the required environment variables. You can, for example, do:
 
 ```bash
 nix run github:peprolinbot/tg-ha-door
 ```
-
-or use the package as you wish.
 
 ### Environment Variables
 
@@ -70,7 +68,7 @@ docker images # You should see the loaded image
 
 ## 💪🏻 Development
 
-You will need [Nix] installed with flakes support, and the included `devShell` will take of the rest
+You will need [Nix] installed with flakes support, and the included `devShell` will take care of the rest
 
 ```bash
 git clone https://github.com/peprolinbot/tg-ha-door
