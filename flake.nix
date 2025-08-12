@@ -97,17 +97,28 @@
           options.services.tg-ha-door = {
             enable = mkEnableOption "tg-ha-door";
             package = mkPackageOption self.packages.${pkgs.system} "tg-ha-door" {};
+            credentialsFile = mkOption {
+              description = ''
+                File containing your tg-ha-door credentials (sensitive env vars). File will be loaded with `EnvironmentFile` in the systemd unit.
+
+                It must be in the following format:
+                ```
+                TG_BOT_TOKEN=4839574812:AAFD39kkdpWt3ywyRZergyOLMaJhac60qc
+                HA_AUTH_TOKEN=eyJhbGciO...U
+                ```
+              '';
+              example = "/tmp/my_tg-ha-door_creds";
+              type = types.path;
+            };
             settings = mkOption {
               description = ''
-                Your tg-ha-door configuration. Will be set to the environment variables in [the README](https://github.com/peprolinbot/tg-ha-door/tree/main?tab=readme-ov-file#environment-variables) for definitions and values.
+                Your tg-ha-door configuration. Will be set to environment variables. See [the README](https://github.com/peprolinbot/tg-ha-door/tree/main?tab=readme-ov-file#environment-variables) for definitions and values.
               '';
               example = lib.literalExpression ''
                 {
-                  TG_BOT_TOKEN = "4839574812:AAFD39kkdpWt3ywyRZergyOLMaJhac60qc";
                   TG_KEY_CHAT_ID = "123456";
                   TG_LOG_CHAT_ID = "654321";
                   HA_URL = "http://homeassistant.local:8123";
-                  HA_AUTH_TOKEN = "eyJhbGciO...U";
                   HA_DOOR_ENTITY_ID = "cover.garage_door";
                   DOOR_OPEN_CLOSE_TIME = 60;
                 }
@@ -117,9 +128,13 @@
                   TG_BOT_TOKEN = mkOption {
                     description = ''
                       The token you obtained from @BotFather ([more info](https://core.telegram.org/bots/tutorial#obtain-your-bot-token))
+
+                      > WARNING: This option will expose store your token unencrypted world-readable in the nix store.
+                      If this is undesired use the `credentialsFile` option instead.
                     '';
                     type = types.str;
                     example = "4839574812:AAFD39kkdpWt3ywyRZergyOLMaJhac60qc";
+                    default = "";
                   };
                   TG_KEY_CHAT_ID = mkOption {
                     description = ''
@@ -146,9 +161,13 @@
                   HA_AUTH_TOKEN = mkOption {
                     description = ''
                       Token used to authenticate against the Home Assistant instance (Long-lived acces token is recommended)
+
+                      > WARNING: This option will expose store your token unencrypted world-readable in the nix store.
+                      If this is undesired use the `credentialsFile` option instead.
                     '';
                     type = types.str;
                     example = "eyJhbGciO...U";
+                    default = "";
                   };
                   HA_DOOR_ENTITY_ID = mkOption {
                     description = ''
@@ -182,6 +201,7 @@
                 Group = "tg-ha-door";
                 DynamicUser = true;
                 StateDirectory = "tg-ha-door";
+                EnvironmentFile = cfg.credentialsFile;
                 ExecStart = "${cfg.package}/bin/tg-ha-door";
                 Restart = "on-failure";
               };
