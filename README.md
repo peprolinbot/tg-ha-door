@@ -34,7 +34,7 @@ docker run -d --name tg-ha-door \
 
 ### ❄️ Nix package
 
-If you use [NixOS] or have [Nix] installed, you can easily use the flake in this repo, which includes a package `tg-ha-door` (the default one) and a NixOS module. Be sure to set all the required environment variables. You can, for example, do:
+If you use [NixOS] or have [Nix] installed, you can easily use the flake in this repo, which includes a package and a NixOS module ([search its options here](https://peprolinbot.github.io/tg-ha-door)). Be sure to set all the required environment variables. You can, for example, do:
 
 ```bash
 nix run github:peprolinbot/tg-ha-door
