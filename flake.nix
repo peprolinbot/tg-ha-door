@@ -70,6 +70,7 @@
 
       options-search = search.packages.${system}.mkSearch {
         title = "tg-ha-door Options Search";
+        baseHref = "/tg-ha-door/";
         modules = [self.nixosModules.default {_module.args = {pkgs = nixpkgsFor.${system};};}];
         urlPrefix = "https://github.com/peprolinbot/tg-ha-door/blob/main/";
       };
